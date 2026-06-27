@@ -1,0 +1,26 @@
+{
+  "name": "bet-tracker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Upload sports betting screenshots and track live bet progress.",
+  "scripts": {
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces",
+    "test": "npm run test --workspaces"
+  },
+  "workspaces": [
+    "frontend",
+    "backend",
+    "shared"
+  ],
+  "keywords": [
+    "betting",
+    "sports",
+    "live-scores",
+    "notifications",
+    "ai"
+  ],
+  "author": "",
+  "license": "MIT"
+}
