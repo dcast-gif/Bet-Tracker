@@ -1,3 +1,6 @@
+import BetCard from "./BetCard";
+import { sampleBets } from "../data/sampleBets";
+
 export default function ActiveBets() {
   return (
     <section
@@ -11,13 +14,24 @@ export default function ActiveBets() {
     >
       <h3>Active Bets</h3>
 
-      <p style={{ color: "#94a3b8" }}>
-        You don't have any active bets yet.
-      </p>
-
-      <p style={{ color: "#64748b", fontSize: "0.9rem" }}>
-        Upload a betting slip to start tracking.
-      </p>
+      <div
+        style={{
+          display: "grid",
+          gap: "16px",
+          marginTop: "18px",
+        }}
+      >
+        {sampleBets.map((bet) => (
+          <BetCard
+            key={bet.id}
+            sport={bet.sport}
+            eventName={bet.eventName}
+            marketName={bet.marketName}
+            status={bet.status}
+            progressText={bet.progressText}
+          />
+        ))}
+      </div>
     </section>
   );
 }
