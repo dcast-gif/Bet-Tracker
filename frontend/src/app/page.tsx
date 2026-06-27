@@ -1,4 +1,5 @@
 import Header from "../components/Header";
+import UploadBox from "../components/UploadBox";
 
 export default function Home() {
   return (
@@ -18,6 +19,8 @@ export default function Home() {
           Upload your betting slip and Bet Tracker will monitor every selection
           live, sending notifications as your bets progress.
         </p>
+
+        <UploadBox />
 
         <div
           style={{
