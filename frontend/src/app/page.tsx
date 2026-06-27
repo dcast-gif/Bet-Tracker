@@ -1,5 +1,6 @@
 import Header from "../components/Header";
 import UploadBox from "../components/UploadBox";
+import ActiveBets from "../components/ActiveBets";
 
 export default function Home() {
   return (
@@ -22,24 +23,7 @@ export default function Home() {
 
         <UploadBox />
 
-        <div
-          style={{
-            marginTop: "30px",
-            padding: "25px",
-            border: "1px solid #334155",
-            borderRadius: "12px",
-          }}
-        >
-          <h3>Coming Soon</h3>
-
-          <ul>
-            <li>📸 Screenshot Upload</li>
-            <li>🤖 AI Bet Recognition</li>
-            <li>⚽ Live Match Tracking</li>
-            <li>📈 Bet Progress</li>
-            <li>🔔 Push Notifications</li>
-          </ul>
-        </div>
+        <ActiveBets />
       </main>
     </>
   );
