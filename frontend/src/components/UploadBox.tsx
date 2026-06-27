@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export default function UploadBox() {
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -13,13 +16,30 @@ export default function UploadBox() {
       return;
     }
 
+    setSelectedFile(file);
     setFileName(file.name);
     setPreviewUrl(URL.createObjectURL(file));
   }
 
   function handleRemoveImage() {
+    setSelectedFile(null);
     setPreviewUrl(null);
     setFileName(null);
+
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  }
+
+  function handleUpload() {
+    if (!selectedFile) {
+      alert("Please choose a screenshot first.");
+      return;
+    }
+
+    alert(`Ready to upload:\n${selectedFile.name}`);
+
+    // Firebase upload will be added here in the next sprint.
   }
 
   return (
@@ -40,6 +60,7 @@ export default function UploadBox() {
       </p>
 
       <input
+        ref={inputRef}
         id="bet-slip-upload"
         type="file"
         accept="image/*"
@@ -54,7 +75,6 @@ export default function UploadBox() {
           marginTop: "15px",
           padding: "12px 18px",
           borderRadius: "8px",
-          border: "none",
           fontWeight: "bold",
           background: "#f8fafc",
           color: "#0f172a",
@@ -70,31 +90,53 @@ export default function UploadBox() {
 
           <img
             src={previewUrl}
-            alt="Uploaded betting slip preview"
+            alt="Betting slip preview"
             style={{
-              maxWidth: "100%",
+              width: "100%",
+              maxHeight: "500px",
+              objectFit: "contain",
               borderRadius: "12px",
               border: "1px solid #334155",
               marginTop: "12px",
             }}
           />
 
-          <br />
-
-          <button
-            type="button"
-            onClick={handleRemoveImage}
+          <div
             style={{
-              marginTop: "15px",
-              padding: "10px 14px",
-              borderRadius: "8px",
-              border: "1px solid #475569",
-              background: "transparent",
-              color: "#e2e8f0",
+              display: "flex",
+              justifyContent: "center",
+              gap: "12px",
+              marginTop: "20px",
             }}
           >
-            Remove Screenshot
-          </button>
+            <button
+              type="button"
+              onClick={handleUpload}
+              style={{
+                padding: "10px 18px",
+                borderRadius: "8px",
+                background: "#22c55e",
+                color: "white",
+                border: "none",
+              }}
+            >
+              Upload
+            </button>
+
+            <button
+              type="button"
+              onClick={handleRemoveImage}
+              style={{
+                padding: "10px 18px",
+                borderRadius: "8px",
+                background: "#ef4444",
+                color: "white",
+                border: "none",
+              }}
+            >
+              Remove
+            </button>
+          </div>
         </div>
       )}
     </section>
