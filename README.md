@@ -61,9 +61,12 @@ Backend
 - Express
 - TypeScript
 
-Database
+Backend Services
 
-- Supabase
+- Firebase Authentication
+- Firebase Firestore
+- Firebase Storage
+- Firebase Cloud Messaging
 
 AI
 
