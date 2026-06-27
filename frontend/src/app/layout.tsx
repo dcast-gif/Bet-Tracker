@@ -1,8 +1,9 @@
+import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Bet Tracker",
-  description: "Track live progress for sports betting slips.",
+  description: "Track live progress for sports betting slips."
 };
 
 export default function RootLayout({
@@ -12,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body style={{ margin: 0 }}>{children}</body>
+      <body>{children}</body>
     </html>
   );
 }
