@@ -42,6 +42,29 @@ const initialStats: MatchStats = {
 const matchName = "Liverpool v Arsenal";
 const betName = "Engine Lab Demo";
 
+const cardStyle: React.CSSProperties = {
+  marginTop: "20px",
+  padding: "18px",
+  borderRadius: "16px",
+  background: "var(--color-surface-elevated)",
+  border: "1px solid var(--color-border)",
+  color: "var(--color-text-primary)",
+  boxShadow: "var(--shadow-soft)",
+};
+
+const mutedTextStyle: React.CSSProperties = {
+  color: "var(--color-text-secondary)",
+};
+
+const buttonStyle: React.CSSProperties = {
+  border: "1px solid var(--color-border)",
+  background: "var(--color-surface)",
+  color: "var(--color-text-primary)",
+  borderRadius: "999px",
+  padding: "9px 14px",
+  fontWeight: 700,
+};
+
 export default function EngineLab() {
   const previousValueRef = useRef(0);
 
@@ -187,62 +210,30 @@ export default function EngineLab() {
   }
 
   return (
-    <section
-      style={{
-        marginTop: "30px",
-        padding: "25px",
-        borderRadius: "12px",
-        border: "1px solid #334155",
-        background: "#111827",
-      }}
-    >
-      <h3>Engine Lab</h3>
+    <section style={cardStyle}>
+      <h3 style={{ marginTop: 0 }}>Engine Lab</h3>
 
-      <p style={{ color: "#94a3b8" }}>
+      <p style={mutedTextStyle}>
         Test live match stats, progress calculations, and notifications.
       </p>
 
-      <button type="button" onClick={resetLab}>
+      <button type="button" onClick={resetLab} style={buttonStyle}>
         Reset Engine Lab
       </button>
 
-      <div
-        style={{
-          marginTop: "20px",
-          padding: "16px",
-          borderRadius: "10px",
-          background: "#0f172a",
-          border: "1px solid #334155",
-        }}
-      >
+      <div style={cardStyle}>
         <h4>Current Match</h4>
 
         <h2>
           Liverpool {stats.homeGoals} - {stats.awayGoals} Arsenal
         </h2>
 
-        <p>
-          Corners: {stats.homeCorners} - {stats.awayCorners}
-        </p>
-
-        <p>
-          Yellow Cards: {stats.homeYellowCards} - {stats.awayYellowCards}
-        </p>
-
-        <p>
-          Red Cards: {stats.homeRedCards} - {stats.awayRedCards}
-        </p>
+        <p>Corners: {stats.homeCorners} - {stats.awayCorners}</p>
+        <p>Yellow Cards: {stats.homeYellowCards} - {stats.awayYellowCards}</p>
+        <p>Red Cards: {stats.homeRedCards} - {stats.awayRedCards}</p>
       </div>
 
-      <div
-        style={{
-          marginTop: "20px",
-          padding: "16px",
-          borderRadius: "10px",
-          background: "#0f172a",
-          border: "1px solid #334155",
-        }}
-      >
+      <div style={cardStyle}>
         <label htmlFor="market-select">
           <strong>Tracked Market</strong>
         </label>
@@ -256,7 +247,10 @@ export default function EngineLab() {
             width: "100%",
             marginTop: "10px",
             padding: "10px",
-            borderRadius: "8px",
+            borderRadius: "10px",
+            border: "1px solid var(--color-border)",
+            background: "var(--color-surface)",
+            color: "var(--color-text-primary)",
           }}
         >
           {Object.entries(DEFAULT_MARKETS).map(([key, market]) => (
@@ -277,7 +271,7 @@ export default function EngineLab() {
           }}
         />
 
-        <p style={{ color: "#94a3b8" }}>
+        <p style={mutedTextStyle}>
           Engine calculated: {result.progressPercentage}%
         </p>
       </div>
@@ -319,18 +313,19 @@ function StatControl({
         justifyContent: "space-between",
         alignItems: "center",
         gap: "12px",
+        color: "var(--color-text-primary)",
       }}
     >
       <strong>{label}</strong>
 
       <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-        <button type="button" onClick={onDecrease}>
+        <button type="button" onClick={onDecrease} style={buttonStyle}>
           −
         </button>
 
         <span>{value}</span>
 
-        <button type="button" onClick={onIncrease}>
+        <button type="button" onClick={onIncrease} style={buttonStyle}>
           +
         </button>
       </div>
