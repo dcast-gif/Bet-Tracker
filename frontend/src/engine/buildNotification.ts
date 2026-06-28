@@ -10,14 +10,32 @@ export interface NotificationPayload {
 export function buildNotification(
   condition: Condition,
   result: EvaluationResult,
-  unit: string
+  unit: string,
+  context?: {
+    betName?: string;
+    eventName?: string;
+    marketName?: string;
+  }
 ): NotificationPayload | null {
   if (!result.notificationRequired) {
     return null;
   }
 
+  const progressMessage = createProgressMessage(condition, result, unit);
+
+  const title = result.completed
+    ? "✅ Selection Complete"
+    : "📈 Progress Update";
+
+  const parts = [
+    context?.betName,
+    context?.eventName,
+    context?.marketName,
+    progressMessage,
+  ].filter(Boolean);
+
   return {
-    title: result.completed ? "✅ Selection Complete" : "📈 Progress Update",
-    message: createProgressMessage(condition, result, unit),
+    title,
+    message: parts.join("\n"),
   };
 }
