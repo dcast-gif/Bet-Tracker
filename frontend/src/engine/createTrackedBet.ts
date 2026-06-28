@@ -8,7 +8,8 @@ export function createTrackedBet(
     id: parsedBetSlip.id,
     bookmaker: parsedBetSlip.bookmaker,
     uploadedAt: parsedBetSlip.createdAt,
-    status: "uploaded",
+    imageUrl: parsedBetSlip.sourceImageUrl,
+    status: "parsed",
     selections: [],
   };
 }
