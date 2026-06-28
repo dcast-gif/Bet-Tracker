@@ -25,7 +25,7 @@ export default function BottomNavigation({
         left: 0,
         right: 0,
         bottom: 0,
-        height: "82px",
+        height: "78px",
         background: colors.surface,
         borderTop: `1px solid ${colors.border}`,
         display: "flex",
@@ -35,11 +35,7 @@ export default function BottomNavigation({
         boxShadow: shadows.soft,
       }}
     >
-      <button
-        type="button"
-        onClick={onHome}
-        style={buttonStyle}
-      >
+      <button type="button" onClick={onHome} style={buttonStyle}>
         <HomeIcon active={active === "home"} />
       </button>
 
@@ -47,27 +43,23 @@ export default function BottomNavigation({
         type="button"
         onClick={onAdd}
         style={{
-          width: "68px",
-          height: "68px",
+          width: "58px",
+          height: "58px",
           borderRadius: "50%",
           border: `3px solid ${colors.surface}`,
           background: colors.accent,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          transform: "translateY(-22px)",
-          boxShadow: "0 12px 30px rgba(34,197,94,0.35)",
+          transform: "translateY(-18px)",
+          boxShadow: "0 10px 24px rgba(0,0,0,0.28)",
           cursor: "pointer",
         }}
       >
         <AddIcon active />
       </button>
 
-      <button
-        type="button"
-        onClick={onSettings}
-        style={buttonStyle}
-      >
+      <button type="button" onClick={onSettings} style={buttonStyle}>
         <SettingsIcon active={active === "settings"} />
       </button>
     </nav>
@@ -81,7 +73,7 @@ const buttonStyle: React.CSSProperties = {
   alignItems: "center",
   justifyContent: "center",
   cursor: "pointer",
-  width: "56px",
-  height: "56px",
+  width: "54px",
+  height: "54px",
   borderRadius: radius.pill,
 };
