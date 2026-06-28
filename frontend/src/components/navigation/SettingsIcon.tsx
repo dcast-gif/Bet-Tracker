@@ -1,3 +1,5 @@
+import { colors } from "../../styles/theme";
+
 type IconProps = {
   active?: boolean;
 };
@@ -7,11 +9,11 @@ export default function SettingsIcon({
 }: IconProps) {
   return (
     <svg
-      width="26"
-      height="26"
+      width="24"
+      height="24"
       viewBox="0 0 24 24"
-      fill="none"
-      stroke={active ? "#22c55e" : "#94a3b8"}
+      fill={active ? colors.accent : "none"}
+      stroke={active ? colors.accent : colors.textMuted}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
