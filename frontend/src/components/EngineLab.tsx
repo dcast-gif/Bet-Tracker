@@ -6,12 +6,20 @@ import { buildNotification } from "../engine/buildNotification";
 import { createStatisticsSnapshot } from "../engine/createStatisticsSnapshot";
 import { processSnapshot } from "../engine/processSnapshot";
 import { createProgressMessage } from "../engine/createProgressMessage";
+import EngineTimeline from "./EngineTimeline";
 
 type Stats = {
   goals: number;
   corners: number;
   yellowCards: number;
   redCards: number;
+};
+
+type TimelineEvent = {
+  id: string;
+  time: string;
+  title: string;
+  description: string;
 };
 
 const testCondition: Condition = {
@@ -25,6 +33,9 @@ const testCondition: Condition = {
 
 export default function EngineLab() {
   const previousGoalsRef = useRef(0);
+
+  const [minute, setMinute] = useState(0);
+  const [events, setEvents] = useState<TimelineEvent[]>([]);
 
   const [stats, setStats] = useState<Stats>({
     goals: 0,
@@ -53,20 +64,48 @@ export default function EngineLab() {
 
   const progressMessage = createProgressMessage(condition, result, "Goals");
 
-  function updateStat(stat: keyof Stats, change: number) {
-    setStats((current) => ({
-      ...current,
-      [stat]: Math.max(0, current[stat] + change),
+  function addTimelineEvent(title: string, description: string) {
+    setEvents((currentEvents) => [
+      {
+        id: crypto.randomUUID(),
+        time: `${minute}'`,
+        title,
+        description,
+      },
+      ...currentEvents,
+    ]);
+  }
+
+  function updateStat(
+    stat: keyof Stats,
+    change: number,
+    label: string
+  ) {
+    setMinute((currentMinute) => currentMinute + 1);
+
+    setStats((currentStats) => ({
+      ...currentStats,
+      [stat]: Math.max(0, currentStats[stat] + change),
     }));
+
+    addTimelineEvent(
+      change > 0 ? `${label} Added` : `${label} Removed`,
+      `${label} changed by ${change > 0 ? "+" : ""}${change}`
+    );
   }
 
   useEffect(() => {
     if (result.currentValue === previousGoalsRef.current) return;
 
-    if ("Notification" in window && Notification.permission === "granted") {
-      const notification = buildNotification(condition, result, "Goals");
+    const notification = buildNotification(condition, result, "Goals");
 
-      if (notification) {
+    if (notification) {
+      addTimelineEvent(
+        "Notification Generated",
+        `${notification.title}: ${notification.message}`
+      );
+
+      if ("Notification" in window && Notification.permission === "granted") {
         new Notification(notification.title, {
           body: notification.message,
         });
@@ -95,29 +134,29 @@ export default function EngineLab() {
       <StatControl
         label="Goals"
         value={stats.goals}
-        onDecrease={() => updateStat("goals", -1)}
-        onIncrease={() => updateStat("goals", 1)}
+        onDecrease={() => updateStat("goals", -1, "Goal")}
+        onIncrease={() => updateStat("goals", 1, "Goal")}
       />
 
       <StatControl
         label="Corners"
         value={stats.corners}
-        onDecrease={() => updateStat("corners", -1)}
-        onIncrease={() => updateStat("corners", 1)}
+        onDecrease={() => updateStat("corners", -1, "Corner")}
+        onIncrease={() => updateStat("corners", 1, "Corner")}
       />
 
       <StatControl
         label="Yellow Cards"
         value={stats.yellowCards}
-        onDecrease={() => updateStat("yellowCards", -1)}
-        onIncrease={() => updateStat("yellowCards", 1)}
+        onDecrease={() => updateStat("yellowCards", -1, "Yellow Card")}
+        onIncrease={() => updateStat("yellowCards", 1, "Yellow Card")}
       />
 
       <StatControl
         label="Red Cards"
         value={stats.redCards}
-        onDecrease={() => updateStat("redCards", -1)}
-        onIncrease={() => updateStat("redCards", 1)}
+        onDecrease={() => updateStat("redCards", -1, "Red Card")}
+        onIncrease={() => updateStat("redCards", 1, "Red Card")}
       />
 
       <div
@@ -148,6 +187,8 @@ export default function EngineLab() {
           Engine calculated: {result.progressPercentage}%
         </p>
       </div>
+
+      <EngineTimeline events={events} />
     </section>
   );
 }
