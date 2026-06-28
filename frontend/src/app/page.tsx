@@ -2,6 +2,7 @@ import Header from "../components/Header";
 import UploadBox from "../components/UploadBox";
 import ActiveBets from "../components/ActiveBets";
 import NotificationTester from "../components/NotificationTester";
+import SimulationTester from "../components/SimulationTester";
 
 export default function Home() {
   return (
@@ -25,6 +26,8 @@ export default function Home() {
         <UploadBox />
 
         <NotificationTester />
+
+        <SimulationTester />
 
         <ActiveBets />
       </main>
