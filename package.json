@@ -1,26 +1,24 @@
 {
-  "name": "bet-tracker",
+  "name": "bet-tracker-frontend",
   "version": "0.2.0",
   "private": true,
-  "description": "Upload sports betting screenshots and track live bet progress.",
   "scripts": {
-    "dev": "npm run dev --workspaces",
-    "build": "npm run build --workspaces",
-    "lint": "npm run lint --workspaces",
-    "test": "npm run test --workspaces"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "workspaces": [
-    "frontend",
-    "backend",
-    "shared"
-  ],
-  "keywords": [
-    "betting",
-    "sports",
-    "live-scores",
-    "notifications",
-    "ai"
-  ],
-  "author": "",
-  "license": "MIT"
+  "dependencies": {
+    "@supabase/supabase-js": "^2.108.1",
+    "firebase": "^11.10.0",
+    "next": "^15.5.19",
+    "openai": "^5.10.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "typescript": "^5.7.0"
+  }
 }
