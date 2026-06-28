@@ -33,10 +33,13 @@ export function evaluateCondition(
       break;
   }
 
-  const progressPercentage = Math.min(
-    100,
-    Math.round((latestValue / condition.targetValue) * 100)
-  );
+  const progressPercentage =
+    condition.targetValue === 0
+      ? 0
+      : Math.min(
+          100,
+          Math.round((latestValue / condition.targetValue) * 100)
+        );
 
   return {
     conditionId: condition.id,
@@ -46,10 +49,10 @@ export function evaluateCondition(
     completed,
     failed: false,
     notificationRequired: progressed,
+    progressPercentage,
     notificationTitle: completed
       ? "✅ Selection Complete"
       : "📈 Progress Update",
     notificationMessage: `${latestValue} / ${condition.targetValue}`,
-    progressPercentage,
-  } as EvaluationResult & { progressPercentage: number };
+  };
 }
