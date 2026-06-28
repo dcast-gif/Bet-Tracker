@@ -9,9 +9,7 @@ type EngineTimelineProps = {
   events: TimelineEvent[];
 };
 
-export default function EngineTimeline({
-  events,
-}: EngineTimelineProps) {
+export default function EngineTimeline({ events }: EngineTimelineProps) {
   return (
     <section
       style={{
@@ -25,9 +23,7 @@ export default function EngineTimeline({
       <h4>Engine Timeline</h4>
 
       {events.length === 0 && (
-        <p style={{ color: "#94a3b8" }}>
-          Waiting for first event...
-        </p>
+        <p style={{ color: "#94a3b8" }}>Waiting for first event...</p>
       )}
 
       {events.map((event) => (
@@ -40,16 +36,19 @@ export default function EngineTimeline({
         >
           <strong>{event.time}</strong>
 
-          <div>{event.title}</div>
+          <div style={{ marginTop: "4px" }}>{event.title}</div>
 
-          <div
+          <pre
             style={{
               color: "#94a3b8",
-              fontSize: "0.9rem",
+              fontSize: "0.85rem",
+              whiteSpace: "pre-wrap",
+              margin: "6px 0 0",
+              fontFamily: "inherit",
             }}
           >
             {event.description}
-          </div>
+          </pre>
         </div>
       ))}
     </section>
