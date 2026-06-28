@@ -1,20 +1,17 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Condition } from "../types/condition";
 import { buildNotification } from "../engine/buildNotification";
+import { createProgressMessage } from "../engine/createProgressMessage";
 import { createStatisticsSnapshot } from "../engine/createStatisticsSnapshot";
 import { processSnapshot } from "../engine/processSnapshot";
-import { createProgressMessage } from "../engine/createProgressMessage";
+import { DEFAULT_MARKETS } from "../engine/defaultMarkets";
 import EngineTimeline from "./EngineTimeline";
 
-type MarketId =
-  | "over_2_5_goals"
-  | "over_10_5_corners"
-  | "home_over_1_5_goals"
-  | "away_over_1_5_goals";
+type MarketKey = keyof typeof DEFAULT_MARKETS;
 
-type Stats = {
+type MatchStats = {
   homeGoals: number;
   awayGoals: number;
   homeCorners: number;
@@ -32,106 +29,41 @@ type TimelineEvent = {
   description: string;
 };
 
-const marketOptions: {
-  id: MarketId;
-  label: string;
-  condition: Condition;
-  unit: string;
-}[] = [
-  {
-    id: "over_2_5_goals",
-    label: "Over 2.5 Goals",
-    unit: "Goals",
-    condition: {
-      id: "over-2-5-goals",
-      statistic: "goals",
-      operator: "greater_than_or_equal",
-      targetValue: 3,
-      currentValue: 0,
-      satisfied: false,
-    },
-  },
-  {
-    id: "over_10_5_corners",
-    label: "Over 10.5 Corners",
-    unit: "Corners",
-    condition: {
-      id: "over-10-5-corners",
-      statistic: "corners",
-      operator: "greater_than_or_equal",
-      targetValue: 11,
-      currentValue: 0,
-      satisfied: false,
-    },
-  },
-  {
-    id: "home_over_1_5_goals",
-    label: "Home Team Over 1.5 Goals",
-    unit: "Home Goals",
-    condition: {
-      id: "home-over-1-5-goals",
-      statistic: "home_goals",
-      operator: "greater_than_or_equal",
-      targetValue: 2,
-      currentValue: 0,
-      satisfied: false,
-    },
-  },
-  {
-    id: "away_over_1_5_goals",
-    label: "Away Team Over 1.5 Goals",
-    unit: "Away Goals",
-    condition: {
-      id: "away-over-1-5-goals",
-      statistic: "away_goals",
-      operator: "greater_than_or_equal",
-      targetValue: 2,
-      currentValue: 0,
-      satisfied: false,
-    },
-  },
-];
+const initialStats: MatchStats = {
+  homeGoals: 0,
+  awayGoals: 0,
+  homeCorners: 0,
+  awayCorners: 0,
+  homeYellowCards: 0,
+  awayYellowCards: 0,
+  homeRedCards: 0,
+  awayRedCards: 0,
+};
 
 export default function EngineLab() {
   const previousValueRef = useRef(0);
 
-  const [selectedMarketId, setSelectedMarketId] =
-    useState<MarketId>("over_2_5_goals");
-
   const [minute, setMinute] = useState(0);
+  const [stats, setStats] = useState<MatchStats>(initialStats);
   const [events, setEvents] = useState<TimelineEvent[]>([]);
+  const [selectedMarketKey, setSelectedMarketKey] =
+    useState<MarketKey>("over25Goals");
 
-  const [stats, setStats] = useState<Stats>({
-    homeGoals: 0,
-    awayGoals: 0,
-    homeCorners: 0,
-    awayCorners: 0,
-    homeYellowCards: 0,
-    awayYellowCards: 0,
-    homeRedCards: 0,
-    awayRedCards: 0,
-  });
-
-  const selectedMarket =
-    marketOptions.find((market) => market.id === selectedMarketId) ??
-    marketOptions[0];
-
-  const totalGoals = stats.homeGoals + stats.awayGoals;
-  const totalCorners = stats.homeCorners + stats.awayCorners;
+  const selectedMarket = DEFAULT_MARKETS[selectedMarketKey];
 
   const snapshot = useMemo(
     () =>
       createStatisticsSnapshot("engine-lab-match", {
-        goals: totalGoals,
+        goals: stats.homeGoals + stats.awayGoals,
         home_goals: stats.homeGoals,
         away_goals: stats.awayGoals,
-        corners: totalCorners,
+        corners: stats.homeCorners + stats.awayCorners,
         home_corners: stats.homeCorners,
         away_corners: stats.awayCorners,
         yellow_cards: stats.homeYellowCards + stats.awayYellowCards,
         red_cards: stats.homeRedCards + stats.awayRedCards,
       }),
-    [stats, totalGoals, totalCorners]
+    [stats]
   );
 
   const condition: Condition = {
@@ -147,11 +79,15 @@ export default function EngineLab() {
     selectedMarket.unit
   );
 
-  function addTimelineEvent(title: string, description: string) {
+  function addTimelineEvent(
+    nextMinute: number,
+    title: string,
+    description: string
+  ) {
     setEvents((currentEvents) => [
       {
         id: crypto.randomUUID(),
-        time: `${minute}'`,
+        time: `${nextMinute}'`,
         title,
         description,
       },
@@ -160,66 +96,55 @@ export default function EngineLab() {
   }
 
   function updateStat(
-    stat: keyof Stats,
+    stat: keyof MatchStats,
     change: number,
     label: string
   ) {
     const nextMinute = minute + 1;
+    const previousTrackedValue = result.currentValue;
+
     setMinute(nextMinute);
 
-    setStats((currentStats) => {
-      const nextValue = Math.max(0, currentStats[stat] + change);
+    const nextStats = {
+      ...stats,
+      [stat]: Math.max(0, stats[stat] + change),
+    };
 
-      return {
-        ...currentStats,
-        [stat]: nextValue,
-      };
+    setStats(nextStats);
+
+    addTimelineEvent(
+      nextMinute,
+      change > 0 ? `${label} Added` : `${label} Removed`,
+      `${label} changed by ${change > 0 ? "+" : ""}${change}`
+    );
+
+    const nextSnapshot = createStatisticsSnapshot("engine-lab-match", {
+      goals: nextStats.homeGoals + nextStats.awayGoals,
+      home_goals: nextStats.homeGoals,
+      away_goals: nextStats.awayGoals,
+      corners: nextStats.homeCorners + nextStats.awayCorners,
+      home_corners: nextStats.homeCorners,
+      away_corners: nextStats.awayCorners,
+      yellow_cards: nextStats.homeYellowCards + nextStats.awayYellowCards,
+      red_cards: nextStats.homeRedCards + nextStats.awayRedCards,
     });
 
-    setEvents((currentEvents) => [
-      {
-        id: crypto.randomUUID(),
-        time: `${nextMinute}'`,
-        title: change > 0 ? `${label} Added` : `${label} Removed`,
-        description: `${label} changed by ${change > 0 ? "+" : ""}${change}`,
-      },
-      ...currentEvents,
-    ]);
-  }
+    const nextCondition: Condition = {
+      ...selectedMarket.condition,
+      currentValue: previousTrackedValue,
+    };
 
-  function resetLab() {
-    previousValueRef.current = 0;
-    setMinute(0);
-    setEvents([]);
-    setStats({
-      homeGoals: 0,
-      awayGoals: 0,
-      homeCorners: 0,
-      awayCorners: 0,
-      homeYellowCards: 0,
-      awayYellowCards: 0,
-      homeRedCards: 0,
-      awayRedCards: 0,
-    });
-  }
-
-  function handleMarketChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    previousValueRef.current = 0;
-    setEvents([]);
-    setSelectedMarketId(event.target.value as MarketId);
-  }
-
-  useEffect(() => {
-    if (result.currentValue === previousValueRef.current) return;
+    const nextResult = processSnapshot(nextSnapshot, [nextCondition])[0];
 
     const notification = buildNotification(
-      condition,
-      result,
+      nextCondition,
+      nextResult,
       selectedMarket.unit
     );
 
-    if (notification) {
+    if (notification && nextResult.notificationRequired) {
       addTimelineEvent(
+        nextMinute,
         "Notification Generated",
         `${notification.title}: ${notification.message}`
       );
@@ -231,8 +156,21 @@ export default function EngineLab() {
       }
     }
 
-    previousValueRef.current = result.currentValue;
-  }, [result.currentValue, selectedMarket.unit]);
+    previousValueRef.current = nextResult.currentValue;
+  }
+
+  function resetLab() {
+    previousValueRef.current = 0;
+    setMinute(0);
+    setStats(initialStats);
+    setEvents([]);
+  }
+
+  function changeMarket(event: React.ChangeEvent<HTMLSelectElement>) {
+    previousValueRef.current = 0;
+    setSelectedMarketKey(event.target.value as MarketKey);
+    setEvents([]);
+  }
 
   return (
     <section
@@ -247,24 +185,48 @@ export default function EngineLab() {
       <h3>Engine Lab</h3>
 
       <p style={{ color: "#94a3b8" }}>
-        Simulate live stats and let the Progress Engine calculate the result.
+        Test live match stats, progress calculations, and notifications.
       </p>
 
-      <button
-        type="button"
-        onClick={resetLab}
-        style={{ marginBottom: "16px" }}
-      >
+      <button type="button" onClick={resetLab}>
         Reset Engine Lab
       </button>
 
       <div
         style={{
-          marginBottom: "20px",
+          marginTop: "20px",
           padding: "16px",
           borderRadius: "10px",
-          border: "1px solid #334155",
           background: "#0f172a",
+          border: "1px solid #334155",
+        }}
+      >
+        <h4>Current Match</h4>
+
+        <h2>
+          Liverpool {stats.homeGoals} - {stats.awayGoals} Arsenal
+        </h2>
+
+        <p>
+          Corners: {stats.homeCorners} - {stats.awayCorners}
+        </p>
+
+        <p>
+          Yellow Cards: {stats.homeYellowCards} - {stats.awayYellowCards}
+        </p>
+
+        <p>
+          Red Cards: {stats.homeRedCards} - {stats.awayRedCards}
+        </p>
+      </div>
+
+      <div
+        style={{
+          marginTop: "20px",
+          padding: "16px",
+          borderRadius: "10px",
+          background: "#0f172a",
+          border: "1px solid #334155",
         }}
       >
         <label htmlFor="market-select">
@@ -273,8 +235,8 @@ export default function EngineLab() {
 
         <select
           id="market-select"
-          value={selectedMarketId}
-          onChange={handleMarketChange}
+          value={selectedMarketKey}
+          onChange={changeMarket}
           style={{
             display: "block",
             width: "100%",
@@ -283,92 +245,12 @@ export default function EngineLab() {
             borderRadius: "8px",
           }}
         >
-          {marketOptions.map((market) => (
-            <option key={market.id} value={market.id}>
+          {Object.entries(DEFAULT_MARKETS).map(([key, market]) => (
+            <option key={key} value={key}>
               {market.label}
             </option>
           ))}
         </select>
-      </div>
-
-      <h4>Match Controls</h4>
-
-      <StatControl
-        label="Home Goals"
-        value={stats.homeGoals}
-        onDecrease={() => updateStat("homeGoals", -1, "Home Goal")}
-        onIncrease={() => updateStat("homeGoals", 1, "Home Goal")}
-      />
-
-      <StatControl
-        label="Away Goals"
-        value={stats.awayGoals}
-        onDecrease={() => updateStat("awayGoals", -1, "Away Goal")}
-        onIncrease={() => updateStat("awayGoals", 1, "Away Goal")}
-      />
-
-      <StatControl
-        label="Home Corners"
-        value={stats.homeCorners}
-        onDecrease={() => updateStat("homeCorners", -1, "Home Corner")}
-        onIncrease={() => updateStat("homeCorners", 1, "Home Corner")}
-      />
-
-      <StatControl
-        label="Away Corners"
-        value={stats.awayCorners}
-        onDecrease={() => updateStat("awayCorners", -1, "Away Corner")}
-        onIncrease={() => updateStat("awayCorners", 1, "Away Corner")}
-      />
-
-      <StatControl
-        label="Home Yellow Cards"
-        value={stats.homeYellowCards}
-        onDecrease={() =>
-          updateStat("homeYellowCards", -1, "Home Yellow Card")
-        }
-        onIncrease={() =>
-          updateStat("homeYellowCards", 1, "Home Yellow Card")
-        }
-      />
-
-      <StatControl
-        label="Away Yellow Cards"
-        value={stats.awayYellowCards}
-        onDecrease={() =>
-          updateStat("awayYellowCards", -1, "Away Yellow Card")
-        }
-        onIncrease={() =>
-          updateStat("awayYellowCards", 1, "Away Yellow Card")
-        }
-      />
-
-      <StatControl
-        label="Home Red Cards"
-        value={stats.homeRedCards}
-        onDecrease={() => updateStat("homeRedCards", -1, "Home Red Card")}
-        onIncrease={() => updateStat("homeRedCards", 1, "Home Red Card")}
-      />
-
-      <StatControl
-        label="Away Red Cards"
-        value={stats.awayRedCards}
-        onDecrease={() => updateStat("awayRedCards", -1, "Away Red Card")}
-        onIncrease={() => updateStat("awayRedCards", 1, "Away Red Card")}
-      />
-
-      <div
-        style={{
-          marginTop: "24px",
-          padding: "18px",
-          borderRadius: "10px",
-          background: "#0f172a",
-          border: "1px solid #334155",
-        }}
-      >
-        <h4>Progress Engine Output</h4>
-
-        <p>{selectedMarket.label}</p>
 
         <h2>{progressMessage}</h2>
 
@@ -385,6 +267,17 @@ export default function EngineLab() {
           Engine calculated: {result.progressPercentage}%
         </p>
       </div>
+
+      <h4 style={{ marginTop: "24px" }}>Match Controls</h4>
+
+      <StatControl label="Home Goal" value={stats.homeGoals} onDecrease={() => updateStat("homeGoals", -1, "Home Goal")} onIncrease={() => updateStat("homeGoals", 1, "Home Goal")} />
+      <StatControl label="Away Goal" value={stats.awayGoals} onDecrease={() => updateStat("awayGoals", -1, "Away Goal")} onIncrease={() => updateStat("awayGoals", 1, "Away Goal")} />
+      <StatControl label="Home Corner" value={stats.homeCorners} onDecrease={() => updateStat("homeCorners", -1, "Home Corner")} onIncrease={() => updateStat("homeCorners", 1, "Home Corner")} />
+      <StatControl label="Away Corner" value={stats.awayCorners} onDecrease={() => updateStat("awayCorners", -1, "Away Corner")} onIncrease={() => updateStat("awayCorners", 1, "Away Corner")} />
+      <StatControl label="Home Yellow Card" value={stats.homeYellowCards} onDecrease={() => updateStat("homeYellowCards", -1, "Home Yellow Card")} onIncrease={() => updateStat("homeYellowCards", 1, "Home Yellow Card")} />
+      <StatControl label="Away Yellow Card" value={stats.awayYellowCards} onDecrease={() => updateStat("awayYellowCards", -1, "Away Yellow Card")} onIncrease={() => updateStat("awayYellowCards", 1, "Away Yellow Card")} />
+      <StatControl label="Home Red Card" value={stats.homeRedCards} onDecrease={() => updateStat("homeRedCards", -1, "Home Red Card")} onIncrease={() => updateStat("homeRedCards", 1, "Home Red Card")} />
+      <StatControl label="Away Red Card" value={stats.awayRedCards} onDecrease={() => updateStat("awayRedCards", -1, "Away Red Card")} onIncrease={() => updateStat("awayRedCards", 1, "Away Red Card")} />
 
       <EngineTimeline events={events} />
     </section>
@@ -407,7 +300,7 @@ function StatControl({
   return (
     <div
       style={{
-        marginTop: "16px",
+        marginTop: "14px",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
