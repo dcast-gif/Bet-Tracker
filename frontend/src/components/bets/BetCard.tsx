@@ -35,27 +35,42 @@ export default function BetCard({
         padding: "18px",
         marginBottom: "18px",
         boxShadow: shadows.soft,
+        cursor: "pointer",
+        transition: "0.2s ease",
       }}
     >
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "8px",
+          alignItems: "flex-start",
         }}
       >
-        <strong
-          style={{
-            color: colors.textPrimary,
-            fontSize: "1rem",
-          }}
-        >
-          {title}
-        </strong>
+        <div>
+          <strong
+            style={{
+              color: colors.textPrimary,
+              fontSize: "1.05rem",
+            }}
+          >
+            {title}
+          </strong>
+
+          <div
+            style={{
+              color: colors.textSecondary,
+              marginTop: "6px",
+            }}
+          >
+            {subtitle}
+          </div>
+        </div>
 
         <span
           style={{
+            padding: "5px 10px",
+            borderRadius: radius.pill,
+            background: `${colour}20`,
             color: colour,
             fontWeight: 700,
             fontSize: "0.75rem",
@@ -68,20 +83,11 @@ export default function BetCard({
 
       <div
         style={{
-          color: colors.textSecondary,
-          marginBottom: "14px",
-        }}
-      >
-        {subtitle}
-      </div>
-
-      <div
-        style={{
+          marginTop: "18px",
           height: "8px",
           borderRadius: radius.pill,
-          overflow: "hidden",
           background: colors.surface,
-          marginBottom: "12px",
+          overflow: "hidden",
         }}
       >
         <div
@@ -97,15 +103,32 @@ export default function BetCard({
         style={{
           display: "flex",
           justifyContent: "space-between",
+          alignItems: "center",
+          marginTop: "14px",
           color: colors.textSecondary,
           fontSize: "0.85rem",
         }}
       >
         <span>
-          {completed} / {total} Complete
+          <strong
+            style={{
+              color: colors.textPrimary,
+            }}
+          >
+            {completed}
+          </strong>{" "}
+          / {total} selections
         </span>
 
-        {minute && <span>{minute}</span>}
+        {minute && (
+          <strong
+            style={{
+              color: colors.textPrimary,
+            }}
+          >
+            {minute}
+          </strong>
+        )}
       </div>
     </div>
   );
