@@ -5,10 +5,13 @@ type AppMenuProps = {
   onChangeView: (view: string) => void;
 };
 
-export default function AppMenu({ currentView, onChangeView }: AppMenuProps) {
+export default function AppMenu({
+  currentView,
+  onChangeView,
+}: AppMenuProps) {
   const items = [
     { id: "home", label: "🏠 Home" },
-    { id: "developer", label: "🧪 Developer" },
+    { id: "engine-lab", label: "🧪 Engine Lab" },
   ];
 
   return (
@@ -29,8 +32,11 @@ export default function AppMenu({ currentView, onChangeView }: AppMenuProps) {
             padding: "10px 14px",
             borderRadius: "999px",
             border: "1px solid #334155",
-            background: currentView === item.id ? "#22c55e" : "#111827",
-            color: currentView === item.id ? "#ffffff" : "#cbd5e1",
+            background:
+              currentView === item.id ? "#22c55e" : "#111827",
+            color:
+              currentView === item.id ? "#ffffff" : "#cbd5e1",
+            cursor: "pointer",
           }}
         >
           {item.label}
