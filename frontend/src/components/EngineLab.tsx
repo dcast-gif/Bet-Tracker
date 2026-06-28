@@ -81,17 +81,39 @@ export default function EngineLab() {
     change: number,
     label: string
   ) {
-    setMinute((currentMinute) => currentMinute + 1);
+    const nextMinute = minute + 1;
+    setMinute(nextMinute);
 
-    setStats((currentStats) => ({
-      ...currentStats,
-      [stat]: Math.max(0, currentStats[stat] + change),
-    }));
+    setStats((currentStats) => {
+      const nextValue = Math.max(0, currentStats[stat] + change);
 
-    addTimelineEvent(
-      change > 0 ? `${label} Added` : `${label} Removed`,
-      `${label} changed by ${change > 0 ? "+" : ""}${change}`
-    );
+      return {
+        ...currentStats,
+        [stat]: nextValue,
+      };
+    });
+
+    setEvents((currentEvents) => [
+      {
+        id: crypto.randomUUID(),
+        time: `${nextMinute}'`,
+        title: change > 0 ? `${label} Added` : `${label} Removed`,
+        description: `${label} changed by ${change > 0 ? "+" : ""}${change}`,
+      },
+      ...currentEvents,
+    ]);
+  }
+
+  function resetLab() {
+    previousGoalsRef.current = 0;
+    setMinute(0);
+    setEvents([]);
+    setStats({
+      goals: 0,
+      corners: 0,
+      yellowCards: 0,
+      redCards: 0,
+    });
   }
 
   useEffect(() => {
@@ -130,6 +152,16 @@ export default function EngineLab() {
       <p style={{ color: "#94a3b8" }}>
         Simulate live stats and let the Progress Engine calculate the result.
       </p>
+
+      <button
+        type="button"
+        onClick={resetLab}
+        style={{
+          marginBottom: "16px",
+        }}
+      >
+        Reset Engine Lab
+      </button>
 
       <StatControl
         label="Goals"
