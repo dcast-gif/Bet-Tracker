@@ -13,6 +13,8 @@ export interface EvaluationResult {
 
   notificationRequired: boolean;
 
+  progressPercentage: number;
+
   notificationTitle?: string;
 
   notificationMessage?: string;
