@@ -1,3 +1,5 @@
+import { colors, radius, shadows } from "../../styles/theme";
+
 type BetCardProps = {
   title: string;
   subtitle: string;
@@ -14,20 +16,22 @@ export default function BetCard({
   status,
 }: BetCardProps) {
   const colours = {
-    live: "#22C55E",
-    upcoming: "#38BDF8",
+    live: colors.accent,
+    upcoming: colors.info,
     won: "#D4AF37",
-    lost: "#EF4444",
+    lost: colors.danger,
   };
 
   return (
     <div
       style={{
-        background: "#10281F",
-        border: "1px solid #23483A",
-        borderRadius: "16px",
+        background: colors.surfaceElevated,
+        border: `1px solid ${colors.border}`,
+        borderRadius: radius.lg,
         padding: "18px",
-        marginBottom: "16px",
+        marginBottom: "18px",
+        boxShadow: shadows.soft,
+        transition: "0.2s ease",
       }}
     >
       <div
@@ -37,7 +41,14 @@ export default function BetCard({
           alignItems: "center",
         }}
       >
-        <strong>{title}</strong>
+        <strong
+          style={{
+            color: colors.textPrimary,
+            fontSize: "1rem",
+          }}
+        >
+          {title}
+        </strong>
 
         <span
           style={{
@@ -53,9 +64,9 @@ export default function BetCard({
 
       <p
         style={{
-          color: "#A7B8AE",
+          color: colors.textSecondary,
           marginTop: "8px",
-          marginBottom: "10px",
+          marginBottom: "14px",
         }}
       >
         {subtitle}
@@ -64,10 +75,10 @@ export default function BetCard({
       <div
         style={{
           height: "8px",
-          borderRadius: "999px",
-          background: "#0B1F17",
+          borderRadius: radius.pill,
+          background: colors.surface,
           overflow: "hidden",
-          marginBottom: "10px",
+          marginBottom: "12px",
         }}
       >
         <div
@@ -83,7 +94,7 @@ export default function BetCard({
         style={{
           display: "flex",
           justifyContent: "space-between",
-          color: "#A7B8AE",
+          color: colors.textSecondary,
           fontSize: "0.85rem",
         }}
       >
