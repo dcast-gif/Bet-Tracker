@@ -23,9 +23,13 @@ export function buildNotification(
 
   const progressMessage = createProgressMessage(condition, result, unit);
 
-  const title = result.completed
-    ? "✅ Selection Complete"
-    : "📈 Progress Update";
+  const isCorrection = result.currentValue < result.previousValue;
+
+  const title = isCorrection
+    ? "🔄 Progress Corrected"
+    : result.completed
+      ? "✅ Selection Complete"
+      : "📈 Progress Update";
 
   const parts = [
     context?.betName,
