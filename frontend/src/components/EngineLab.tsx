@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Condition } from "../types/condition";
 import { buildNotification } from "../engine/buildNotification";
 import { createStatisticsSnapshot } from "../engine/createStatisticsSnapshot";
@@ -24,6 +24,8 @@ const testCondition: Condition = {
 };
 
 export default function EngineLab() {
+  const previousGoalsRef = useRef(0);
+
   const [stats, setStats] = useState<Stats>({
     goals: 0,
     corners: 0,
@@ -42,18 +44,14 @@ export default function EngineLab() {
     [stats]
   );
 
-  const result = processSnapshot(snapshot, [
-    {
-      ...testCondition,
-      currentValue: 0,
-    },
-  ])[0];
+  const condition = {
+    ...testCondition,
+    currentValue: previousGoalsRef.current,
+  };
 
-  const progressMessage = createProgressMessage(
-    testCondition,
-    result,
-    "Goals"
-  );
+  const result = processSnapshot(snapshot, [condition])[0];
+
+  const progressMessage = createProgressMessage(condition, result, "Goals");
 
   function updateStat(stat: keyof Stats, change: number) {
     setStats((current) => ({
@@ -63,19 +61,20 @@ export default function EngineLab() {
   }
 
   useEffect(() => {
-    if (!("Notification" in window)) return;
-    if (Notification.permission !== "granted") return;
-    if (!result.notificationRequired) return;
-    if (result.currentValue === 0) return;
+    if (result.currentValue === previousGoalsRef.current) return;
 
-    const notification = buildNotification(testCondition, result, "Goals");
+    if ("Notification" in window && Notification.permission === "granted") {
+      const notification = buildNotification(condition, result, "Goals");
 
-    if (!notification) return;
+      if (notification) {
+        new Notification(notification.title, {
+          body: notification.message,
+        });
+      }
+    }
 
-    new Notification(notification.title, {
-      body: notification.message,
-    });
-  }, [result.currentValue, result.notificationRequired]);
+    previousGoalsRef.current = result.currentValue;
+  }, [result.currentValue]);
 
   return (
     <section
