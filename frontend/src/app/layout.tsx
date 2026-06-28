@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import "../styles/theme.css";
 
 export const metadata: Metadata = {
   title: "Bet Tracker",
