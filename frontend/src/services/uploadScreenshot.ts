@@ -6,7 +6,15 @@ export async function uploadScreenshot(file: File): Promise<string> {
 
   const storageRef = ref(storage, `bet-slips/${fileName}`);
 
-  await uploadBytes(storageRef, file);
+  const uploadTask = uploadBytes(storageRef, file);
+
+  const timeout = new Promise<never>((_, reject) => {
+    setTimeout(() => {
+      reject(new Error("Upload timed out"));
+    }, 20000);
+  });
+
+  await Promise.race([uploadTask, timeout]);
 
   return getDownloadURL(storageRef);
 }
