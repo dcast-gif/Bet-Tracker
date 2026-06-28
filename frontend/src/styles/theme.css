@@ -45,3 +45,28 @@ body {
   background: var(--color-background);
   color: var(--color-text-primary);
 }
+.engine-lab-page section,
+.engine-lab-page article,
+.engine-lab-page div {
+  background: var(--color-surface-elevated) !important;
+  color: var(--color-text-primary) !important;
+  border-color: var(--color-border) !important;
+}
+
+.engine-lab-page p,
+.engine-lab-page span,
+.engine-lab-page label {
+  color: var(--color-text-secondary) !important;
+}
+
+.engine-lab-page h2,
+.engine-lab-page h3,
+.engine-lab-page h4 {
+  color: var(--color-text-primary) !important;
+}
+
+.engine-lab-page button {
+  background: var(--color-surface) !important;
+  color: var(--color-text-primary) !important;
+  border: 1px solid var(--color-border) !important;
+}
