@@ -19,7 +19,7 @@ export default function BetList() {
         progress="0%"
         completed={0}
         total={6}
-        minute="19:45"
+        minute="KO 19:45"
         status="upcoming"
       />
 
