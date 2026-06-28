@@ -11,11 +11,11 @@ export async function parseBetSlip(
     body: JSON.stringify({ imageUrl }),
   });
 
-  if (!response.ok) {
-    throw new Error("Failed to parse bet slip");
-  }
-
   const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error ?? "Failed to parse bet slip");
+  }
 
   return {
     id: crypto.randomUUID(),
