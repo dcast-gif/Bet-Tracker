@@ -1,5 +1,7 @@
 "use client";
 
+import { colors, radius } from "../../styles/theme";
+
 type BetTab = "current" | "upcoming" | "past";
 
 type BetTabsProps = {
@@ -19,6 +21,10 @@ export default function BetTabs({
         display: "flex",
         gap: "10px",
         marginBottom: "24px",
+        padding: "6px",
+        borderRadius: radius.pill,
+        background: colors.surface,
+        border: `1px solid ${colors.border}`,
       }}
     >
       {tabs.map((tab) => {
@@ -31,18 +37,16 @@ export default function BetTabs({
             onClick={() => onChange(tab)}
             style={{
               flex: 1,
-              padding: "12px",
-              borderRadius: "999px",
-              border: selected
-                ? "1px solid #22C55E"
-                : "1px solid #23483A",
+              padding: "10px",
+              borderRadius: radius.pill,
+              border: "none",
               background: selected
-                ? "#123D2A"
-                : "#0B1F17",
+                ? colors.accentSoft
+                : "transparent",
               color: selected
-                ? "#22C55E"
-                : "#A7B8AE",
-              fontWeight: 600,
+                ? colors.accent
+                : colors.textSecondary,
+              fontWeight: 700,
               textTransform: "capitalize",
               cursor: "pointer",
             }}
