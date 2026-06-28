@@ -1,3 +1,5 @@
+import { colors } from "../../styles/theme";
+
 type IconProps = {
   active?: boolean;
 };
@@ -7,12 +9,12 @@ export default function AddIcon({
 }: IconProps) {
   return (
     <svg
-      width="32"
-      height="32"
+      width="26"
+      height="26"
       viewBox="0 0 24 24"
       fill="none"
-      stroke={active ? "#ffffff" : "#ffffff"}
-      strokeWidth="2.5"
+      stroke={active ? "#ffffff" : colors.textMuted}
+      strokeWidth="2.4"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
