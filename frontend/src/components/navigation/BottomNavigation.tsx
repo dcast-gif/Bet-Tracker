@@ -1,5 +1,6 @@
 "use client";
 
+import { colors, radius, shadows } from "../../styles/theme";
 import HomeIcon from "./HomeIcon";
 import AddIcon from "./AddIcon";
 import SettingsIcon from "./SettingsIcon";
@@ -24,13 +25,14 @@ export default function BottomNavigation({
         left: 0,
         right: 0,
         bottom: 0,
-        height: "76px",
-        background: "#0B1F17",
-        borderTop: "1px solid #23483A",
+        height: "82px",
+        background: colors.surface,
+        borderTop: `1px solid ${colors.border}`,
         display: "flex",
         justifyContent: "space-around",
         alignItems: "center",
         zIndex: 1000,
+        boxShadow: shadows.soft,
       }}
     >
       <button
@@ -45,16 +47,16 @@ export default function BottomNavigation({
         type="button"
         onClick={onAdd}
         style={{
-          width: "62px",
-          height: "62px",
+          width: "68px",
+          height: "68px",
           borderRadius: "50%",
-          border: "none",
-          background: "#22C55E",
+          border: `3px solid ${colors.surface}`,
+          background: colors.accent,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          transform: "translateY(-18px)",
-          boxShadow: "0 8px 24px rgba(34,197,94,0.35)",
+          transform: "translateY(-22px)",
+          boxShadow: "0 12px 30px rgba(34,197,94,0.35)",
           cursor: "pointer",
         }}
       >
@@ -79,4 +81,7 @@ const buttonStyle: React.CSSProperties = {
   alignItems: "center",
   justifyContent: "center",
   cursor: "pointer",
+  width: "56px",
+  height: "56px",
+  borderRadius: radius.pill,
 };
