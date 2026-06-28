@@ -34,39 +34,30 @@ export default function EngineLab() {
         background: "#111827",
       }}
     >
-      <h3>Engine Lab</h3>
+      <h3>Match Stats</h3>
 
       <p style={{ color: "#94a3b8" }}>
-        Manually change match stats to test progress updates.
+        Use + and - to simulate live stat changes, including corrections.
       </p>
 
-      <StatControl
-        label="Goals"
-        value={stats.goals}
-        onDecrease={() => updateStat("goals", -1)}
-        onIncrease={() => updateStat("goals", 1)}
-      />
+      <StatControl label="Goals" value={stats.goals} onDecrease={() => updateStat("goals", -1)} onIncrease={() => updateStat("goals", 1)} />
+      <StatControl label="Corners" value={stats.corners} onDecrease={() => updateStat("corners", -1)} onIncrease={() => updateStat("corners", 1)} />
+      <StatControl label="Yellow Cards" value={stats.yellowCards} onDecrease={() => updateStat("yellowCards", -1)} onIncrease={() => updateStat("yellowCards", 1)} />
+      <StatControl label="Red Cards" value={stats.redCards} onDecrease={() => updateStat("redCards", -1)} onIncrease={() => updateStat("redCards", 1)} />
 
-      <StatControl
-        label="Corners"
-        value={stats.corners}
-        onDecrease={() => updateStat("corners", -1)}
-        onIncrease={() => updateStat("corners", 1)}
-      />
-
-      <StatControl
-        label="Yellow Cards"
-        value={stats.yellowCards}
-        onDecrease={() => updateStat("yellowCards", -1)}
-        onIncrease={() => updateStat("yellowCards", 1)}
-      />
-
-      <StatControl
-        label="Red Cards"
-        value={stats.redCards}
-        onDecrease={() => updateStat("redCards", -1)}
-        onIncrease={() => updateStat("redCards", 1)}
-      />
+      <div
+        style={{
+          marginTop: "24px",
+          padding: "16px",
+          borderRadius: "10px",
+          background: "#0f172a",
+          border: "1px solid #334155",
+        }}
+      >
+        <h4>Current Test Market</h4>
+        <p>Over 2.5 Goals</p>
+        <p>{stats.goals} / 3 Goals</p>
+      </div>
     </section>
   );
 }
@@ -101,15 +92,9 @@ function StatControl({
       <strong>{label}</strong>
 
       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <button type="button" onClick={onDecrease}>
-          -
-        </button>
-
+        <button type="button" onClick={onDecrease}>-</button>
         <span>{value}</span>
-
-        <button type="button" onClick={onIncrease}>
-          +
-        </button>
+        <button type="button" onClick={onIncrease}>+</button>
       </div>
     </div>
   );
