@@ -14,14 +14,26 @@ export default function Header({ title }: HeaderProps) {
         background: "#111827",
       }}
     >
-      <h1
-        style={{
-          margin: 0,
-          fontSize: "1.8rem",
-        }}
-      >
-        ⚽ {title}
-      </h1>
+      <div>
+        <h1
+          style={{
+            margin: 0,
+            fontSize: "1.8rem",
+          }}
+        >
+          ⚽ {title}
+        </h1>
+
+        <p
+          style={{
+            margin: "6px 0 0",
+            color: "#94a3b8",
+            fontSize: "0.85rem",
+          }}
+        >
+          Engine Lab Release
+        </p>
+      </div>
 
       <span
         style={{
@@ -29,7 +41,7 @@ export default function Header({ title }: HeaderProps) {
           fontSize: "0.9rem",
         }}
       >
-        Version 0.1
+        v0.2.0
       </span>
     </header>
   );
