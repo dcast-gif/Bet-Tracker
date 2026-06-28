@@ -1,10 +1,15 @@
+"use client";
+
+import { useState } from "react";
 import Header from "../components/Header";
 import UploadBox from "../components/UploadBox";
 import ActiveBets from "../components/ActiveBets";
-import NotificationTester from "../components/NotificationTester";
-import SimulationTester from "../components/SimulationTester";
+import AppMenu from "../components/AppMenu";
+import DeveloperPage from "../components/DeveloperPage";
 
 export default function Home() {
+  const [currentView, setCurrentView] = useState("home");
+
   return (
     <>
       <Header title="Bet Tracker" />
@@ -16,20 +21,27 @@ export default function Home() {
           padding: "20px",
         }}
       >
-        <h2>Welcome</h2>
+        <AppMenu
+          currentView={currentView}
+          onChangeView={setCurrentView}
+        />
 
-        <p>
-          Upload your betting slip and Bet Tracker will monitor every selection
-          live, sending notifications as your bets progress.
-        </p>
+        {currentView === "home" && (
+          <>
+            <h2>Welcome</h2>
 
-        <UploadBox />
+            <p>
+              Upload your betting slip and Bet Tracker will monitor every
+              selection live, sending notifications as your bets progress.
+            </p>
 
-        <NotificationTester />
+            <UploadBox />
 
-        <SimulationTester />
+            <ActiveBets />
+          </>
+        )}
 
-        <ActiveBets />
+        {currentView === "engine-lab" && <DeveloperPage />}
       </main>
     </>
   );
