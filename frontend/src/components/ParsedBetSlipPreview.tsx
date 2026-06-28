@@ -1,4 +1,9 @@
+"use client";
+
+import { useState } from "react";
 import { ParsedBetSlip } from "../types/parsedBetSlip";
+import { BetSlip } from "../types/betSlip";
+import { createTrackedBet } from "../engine/createTrackedBet";
 
 type ParsedBetSlipPreviewProps = {
   betSlip: ParsedBetSlip;
@@ -7,10 +12,12 @@ type ParsedBetSlipPreviewProps = {
 export default function ParsedBetSlipPreview({
   betSlip,
 }: ParsedBetSlipPreviewProps) {
+  const [trackedBet, setTrackedBet] = useState<BetSlip | null>(null);
+
   function handleConfirm() {
-    alert(
-      `Bet slip confirmed with ${betSlip.selections.length} selections. Tracking connection comes next.`
-    );
+    const bet = createTrackedBet(betSlip);
+
+    setTrackedBet(bet);
   }
 
   return (
@@ -25,10 +32,25 @@ export default function ParsedBetSlipPreview({
     >
       <h3>🤖 AI Parser</h3>
 
-      <div style={{ marginTop: "16px", marginBottom: "20px", textAlign: "left" }}>
-        <p><strong>Bookmaker:</strong> {betSlip.bookmaker}</p>
-        <p><strong>Confidence:</strong> {betSlip.confidence}</p>
-        <p><strong>Selections Found:</strong> {betSlip.selections.length}</p>
+      <div
+        style={{
+          marginTop: "16px",
+          marginBottom: "20px",
+          textAlign: "left",
+        }}
+      >
+        <p>
+          <strong>Bookmaker:</strong> {betSlip.bookmaker}
+        </p>
+
+        <p>
+          <strong>Confidence:</strong> {betSlip.confidence}
+        </p>
+
+        <p>
+          <strong>Selections Found:</strong>{" "}
+          {betSlip.selections.length}
+        </p>
       </div>
 
       {betSlip.selections.map((selection) => (
@@ -44,8 +66,24 @@ export default function ParsedBetSlipPreview({
           }}
         >
           <strong>{selection.match}</strong>
-          <p style={{ marginTop: "8px", marginBottom: "4px" }}>{selection.market}</p>
-          <p style={{ color: "#38bdf8", margin: 0 }}>{selection.selection}</p>
+
+          <p
+            style={{
+              marginTop: "8px",
+              marginBottom: "4px",
+            }}
+          >
+            {selection.market}
+          </p>
+
+          <p
+            style={{
+              color: "#38bdf8",
+              margin: 0,
+            }}
+          >
+            {selection.selection}
+          </p>
         </div>
       ))}
 
@@ -65,6 +103,26 @@ export default function ParsedBetSlipPreview({
       >
         Confirm Bet Slip
       </button>
+
+      {trackedBet && (
+        <div
+          style={{
+            marginTop: "20px",
+            padding: "16px",
+            borderRadius: "10px",
+            background: "#111827",
+            textAlign: "left",
+          }}
+        >
+          <strong>✅ Bet Slip Created</strong>
+
+          <p>Status: {trackedBet.status}</p>
+
+          <p>Bookmaker: {trackedBet.bookmaker}</p>
+
+          <p>Ready for Progress Engine</p>
+        </div>
+      )}
     </section>
   );
 }
