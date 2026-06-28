@@ -34,47 +34,85 @@ export default function BottomNavigation({
         alignItems: "center",
         zIndex: 1000,
         boxShadow: shadows.soft,
+        backdropFilter: "blur(20px)",
       }}
     >
-      <button type="button" onClick={onHome} style={buttonStyle}>
+      <NavItem
+        label="Home"
+        active={active === "home"}
+        onClick={onHome}
+      >
         <HomeIcon active={active === "home"} />
-      </button>
+      </NavItem>
 
       <button
         type="button"
         onClick={onAdd}
         style={{
-          width: "54px",
-          height: "54px",
+          width: "56px",
+          height: "56px",
           borderRadius: "50%",
-          border: `3px solid ${colors.surface}`,
-          background: "#1C8F50",
+          border: `4px solid ${colors.surface}`,
+          background: colors.accent,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          transform: "translateY(-16px)",
-          boxShadow: "0 8px 18px rgba(0,0,0,0.22)",
+          transform: "translateY(-18px)",
+          boxShadow: shadows.soft,
           cursor: "pointer",
         }}
       >
         <AddIcon active />
       </button>
 
-      <button type="button" onClick={onSettings} style={buttonStyle}>
+      <NavItem
+        label="Engine"
+        active={active === "settings"}
+        onClick={onSettings}
+      >
         <SettingsIcon active={active === "settings"} />
-      </button>
+      </NavItem>
     </nav>
   );
 }
 
-const buttonStyle: React.CSSProperties = {
-  background: "transparent",
-  border: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  cursor: "pointer",
-  width: "52px",
-  height: "52px",
-  borderRadius: radius.pill,
-};
+function NavItem({
+  children,
+  label,
+  active,
+  onClick,
+}: {
+  children: React.ReactNode;
+  label: string;
+  active: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        background: "transparent",
+        border: "none",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "4px",
+        color: active ? colors.accent : colors.textMuted,
+        cursor: "pointer",
+        minWidth: "64px",
+      }}
+    >
+      {children}
+
+      <span
+        style={{
+          fontSize: "0.72rem",
+          fontWeight: active ? 700 : 500,
+        }}
+      >
+        {label}
+      </span>
+    </button>
+  );
+}
