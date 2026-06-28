@@ -2,13 +2,24 @@
 
 import { useState } from "react";
 import { uploadScreenshot } from "../services/uploadScreenshot";
+import { parseBetSlip } from "../engine/parseBetSlip";
+import ParsedBetSlipPreview from "./ParsedBetSlipPreview";
+import { ParsedBetSlip } from "../types/parsedBetSlip";
 
 export default function UploadBox() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [parsedBetSlip, setParsedBetSlip] =
+    useState<ParsedBetSlip | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const [status, setStatus] = useState<
-    "idle" | "previewing" | "uploading" | "uploaded" | "error"
+    | "idle"
+    | "previewing"
+    | "uploading"
+    | "parsing"
+    | "uploaded"
+    | "error"
   >("idle");
 
   async function handleFileChange(
@@ -20,6 +31,7 @@ export default function UploadBox() {
 
     setStatus("previewing");
     setDownloadUrl(null);
+    setParsedBetSlip(null);
     setErrorMessage(null);
 
     const localPreviewUrl = URL.createObjectURL(file);
@@ -31,6 +43,13 @@ export default function UploadBox() {
       const uploadedUrl = await uploadScreenshot(file);
 
       setDownloadUrl(uploadedUrl);
+
+      setStatus("parsing");
+
+      const parsed = await parseBetSlip(uploadedUrl);
+
+      setParsedBetSlip(parsed);
+
       setStatus("uploaded");
     } catch (error) {
       console.error(error);
@@ -101,9 +120,15 @@ export default function UploadBox() {
 
       {status === "uploading" && <p>Uploading to Supabase...</p>}
 
+      {status === "parsing" && (
+        <p style={{ color: "#38bdf8" }}>
+          AI is analysing your betting slip...
+        </p>
+      )}
+
       {status === "uploaded" && (
         <p style={{ color: "#22c55e" }}>
-          Upload complete ✅ Ready for AI parsing.
+          Upload complete ✅ AI parsing complete.
         </p>
       )}
 
@@ -124,6 +149,10 @@ export default function UploadBox() {
         >
           Supabase URL: {downloadUrl}
         </p>
+      )}
+
+      {parsedBetSlip && (
+        <ParsedBetSlipPreview betSlip={parsedBetSlip} />
       )}
     </section>
   );
