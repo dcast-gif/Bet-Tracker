@@ -44,9 +44,9 @@ export default function BetTabs({
                 ? colors.accentSoft
                 : "transparent",
               color: selected
-                ? colors.accent
+                ? "#0F6B3A"
                 : colors.textSecondary,
-              fontWeight: 700,
+              fontWeight: selected ? 800 : 700,
               textTransform: "capitalize",
               cursor: "pointer",
             }}
