@@ -8,9 +8,11 @@ export function createProgressMessage(
 ): string {
   const target = condition.targetValue;
 
+  const current = Math.min(result.currentValue, target);
+
   if (result.completed) {
-    return `${unit} target complete: ${result.currentValue} / ${target}`;
+    return `✅ ${current} / ${target} ${unit} Complete`;
   }
 
-  return `${result.currentValue} / ${target} ${unit}`;
+  return `${current} / ${target} ${unit}`;
 }
