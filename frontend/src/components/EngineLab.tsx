@@ -40,6 +40,9 @@ const initialStats: MatchStats = {
   awayRedCards: 0,
 };
 
+const matchName = "Liverpool v Arsenal";
+const betName = "Engine Lab Demo";
+
 export default function EngineLab() {
   const previousValueRef = useRef(0);
 
@@ -139,7 +142,12 @@ export default function EngineLab() {
     const notification = buildNotification(
       nextCondition,
       nextResult,
-      selectedMarket.unit
+      selectedMarket.unit,
+      {
+        betName,
+        eventName: matchName,
+        marketName: selectedMarket.label,
+      }
     );
 
     if (notification && nextResult.notificationRequired) {
