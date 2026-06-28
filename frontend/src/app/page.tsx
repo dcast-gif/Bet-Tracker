@@ -30,7 +30,15 @@ export default function Home() {
       >
         {view === "home" && (
           <>
-            <h2>My Bets</h2>
+            <h2
+  style={{
+    marginBottom: "12px",
+    fontSize: "2rem",
+    fontWeight: 800,
+  }}
+>
+  My Bets
+</h2>
 
             <BetTabs
               active={tab}
