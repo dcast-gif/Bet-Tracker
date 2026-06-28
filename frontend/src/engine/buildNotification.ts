@@ -1,5 +1,6 @@
 import { Condition } from "../types/condition";
 import { EvaluationResult } from "../types/evaluationResult";
+import { createProgressMessage } from "./createProgressMessage";
 
 export interface NotificationPayload {
   title: string;
@@ -15,15 +16,8 @@ export function buildNotification(
     return null;
   }
 
-  if (result.completed) {
-    return {
-      title: "✅ Selection Complete",
-      message: `${result.currentValue} / ${condition.targetValue} ${unit}`,
-    };
-  }
-
   return {
-    title: "📈 Progress Update",
-    message: `${result.currentValue} / ${condition.targetValue} ${unit}`,
+    title: result.completed ? "✅ Selection Complete" : "📈 Progress Update",
+    message: createProgressMessage(condition, result, unit),
   };
 }
