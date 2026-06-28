@@ -2,10 +2,9 @@
 
 import { useMemo, useRef, useState } from "react";
 import { Condition } from "../types/condition";
-import { buildNotification } from "../engine/buildNotification";
 import { createProgressMessage } from "../engine/createProgressMessage";
 import { createStatisticsSnapshot } from "../engine/createStatisticsSnapshot";
-import { processSnapshot } from "../engine/processSnapshot";
+import { processMatchUpdate } from "../engine/processMatchUpdate";
 import { DEFAULT_MARKETS } from "../engine/defaultMarkets";
 import EngineTimeline from "./EngineTimeline";
 
@@ -74,7 +73,16 @@ export default function EngineLab() {
     currentValue: previousValueRef.current,
   };
 
-  const result = processSnapshot(snapshot, [condition])[0];
+  const { result } = processMatchUpdate(
+    snapshot,
+    condition,
+    selectedMarket.unit,
+    {
+      betName,
+      eventName: matchName,
+      marketName: selectedMarket.label,
+    }
+  );
 
   const progressMessage = createProgressMessage(
     condition,
@@ -137,11 +145,9 @@ export default function EngineLab() {
       currentValue: previousTrackedValue,
     };
 
-    const nextResult = processSnapshot(nextSnapshot, [nextCondition])[0];
-
-    const notification = buildNotification(
+    const update = processMatchUpdate(
+      nextSnapshot,
       nextCondition,
-      nextResult,
       selectedMarket.unit,
       {
         betName,
@@ -150,21 +156,21 @@ export default function EngineLab() {
       }
     );
 
-    if (notification && nextResult.notificationRequired) {
+    if (update.notification && update.result.notificationRequired) {
       addTimelineEvent(
         nextMinute,
         "Notification Generated",
-        `${notification.title}: ${notification.message}`
+        `${update.notification.title}: ${update.notification.message}`
       );
 
       if ("Notification" in window && Notification.permission === "granted") {
-        new Notification(notification.title, {
-          body: notification.message,
+        new Notification(update.notification.title, {
+          body: update.notification.message,
         });
       }
     }
 
-    previousValueRef.current = nextResult.currentValue;
+    previousValueRef.current = update.result.currentValue;
   }
 
   function resetLab() {
