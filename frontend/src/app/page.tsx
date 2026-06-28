@@ -2,13 +2,19 @@
 
 import { useState } from "react";
 import Header from "../components/Header";
+import BottomNavigation from "../components/navigation/BottomNavigation";
+import BetTabs from "../components/bets/BetTabs";
+import BetList from "../components/bets/BetList";
 import UploadBox from "../components/UploadBox";
-import ActiveBets from "../components/ActiveBets";
-import AppMenu from "../components/AppMenu";
 import DeveloperPage from "../components/DeveloperPage";
 
+type View = "home" | "upload" | "engine";
+
 export default function Home() {
-  const [currentView, setCurrentView] = useState("home");
+  const [view, setView] = useState<View>("home");
+  const [tab, setTab] = useState<
+    "current" | "upcoming" | "past"
+  >("current");
 
   return (
     <>
@@ -17,32 +23,35 @@ export default function Home() {
       <main
         style={{
           maxWidth: "900px",
-          margin: "40px auto",
-          padding: "20px",
+          margin: "0 auto",
+          padding: "24px",
+          paddingBottom: "110px",
         }}
       >
-        <AppMenu
-          currentView={currentView}
-          onChangeView={setCurrentView}
-        />
-
-        {currentView === "home" && (
+        {view === "home" && (
           <>
-            <h2>Welcome</h2>
+            <h2>My Bets</h2>
 
-            <p>
-              Upload your betting slip and Bet Tracker will monitor every
-              selection live, sending notifications as your bets progress.
-            </p>
+            <BetTabs
+              active={tab}
+              onChange={setTab}
+            />
 
-            <UploadBox />
-
-            <ActiveBets />
+            <BetList />
           </>
         )}
 
-        {currentView === "engine-lab" && <DeveloperPage />}
+        {view === "upload" && <UploadBox />}
+
+        {view === "engine" && <DeveloperPage />}
       </main>
+
+      <BottomNavigation
+        active="home"
+        onHome={() => setView("home")}
+        onAdd={() => setView("upload")}
+        onSettings={() => setView("engine")}
+      />
     </>
   );
 }
