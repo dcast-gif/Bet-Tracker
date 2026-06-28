@@ -1,3 +1,5 @@
+import { colors } from "../styles/theme";
+
 type HeaderProps = {
   title: string;
 };
@@ -6,43 +8,30 @@ export default function Header({ title }: HeaderProps) {
   return (
     <header
       style={{
-        padding: "20px 40px",
-        borderBottom: "1px solid #334155",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        background: "#111827",
+        padding: "18px 24px",
+        borderBottom: `1px solid ${colors.border}`,
+        background: colors.background,
       }}
     >
-      <div>
-        <h1
-          style={{
-            margin: 0,
-            fontSize: "1.8rem",
-          }}
-        >
-          ⚽ {title}
-        </h1>
-
-        <p
-          style={{
-            margin: "6px 0 0",
-            color: "#94a3b8",
-            fontSize: "0.85rem",
-          }}
-        >
-          Engine Lab Release
-        </p>
-      </div>
-
-      <span
+      <h1
         style={{
-          color: "#94a3b8",
-          fontSize: "0.9rem",
+          margin: 0,
+          fontSize: "1.6rem",
+          color: colors.textPrimary,
         }}
       >
-        v0.3.0
-      </span>
+        {title}
+      </h1>
+
+      <p
+        style={{
+          margin: "6px 0 0",
+          color: colors.textSecondary,
+          fontSize: "0.85rem",
+        }}
+      >
+        v0.3.1 · AI Parsing Release
+      </p>
     </header>
   );
 }
