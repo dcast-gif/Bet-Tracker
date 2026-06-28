@@ -7,6 +7,12 @@ type ParsedBetSlipPreviewProps = {
 export default function ParsedBetSlipPreview({
   betSlip,
 }: ParsedBetSlipPreviewProps) {
+  function handleConfirm() {
+    alert(
+      `Bet slip confirmed with ${betSlip.selections.length} selections. Tracking connection comes next.`
+    );
+  }
+
   return (
     <section
       style={{
@@ -19,25 +25,10 @@ export default function ParsedBetSlipPreview({
     >
       <h3>🤖 AI Parser</h3>
 
-      <div
-        style={{
-          marginTop: "16px",
-          marginBottom: "20px",
-          textAlign: "left",
-        }}
-      >
-        <p>
-          <strong>Bookmaker:</strong> {betSlip.bookmaker}
-        </p>
-
-        <p>
-          <strong>Confidence:</strong> {betSlip.confidence}
-        </p>
-
-        <p>
-          <strong>Selections Found:</strong>{" "}
-          {betSlip.selections.length}
-        </p>
+      <div style={{ marginTop: "16px", marginBottom: "20px", textAlign: "left" }}>
+        <p><strong>Bookmaker:</strong> {betSlip.bookmaker}</p>
+        <p><strong>Confidence:</strong> {betSlip.confidence}</p>
+        <p><strong>Selections Found:</strong> {betSlip.selections.length}</p>
       </div>
 
       {betSlip.selections.map((selection) => (
@@ -53,29 +44,14 @@ export default function ParsedBetSlipPreview({
           }}
         >
           <strong>{selection.match}</strong>
-
-          <p
-            style={{
-              marginTop: "8px",
-              marginBottom: "4px",
-            }}
-          >
-            {selection.market}
-          </p>
-
-          <p
-            style={{
-              color: "#38bdf8",
-              margin: 0,
-            }}
-          >
-            {selection.selection}
-          </p>
+          <p style={{ marginTop: "8px", marginBottom: "4px" }}>{selection.market}</p>
+          <p style={{ color: "#38bdf8", margin: 0 }}>{selection.selection}</p>
         </div>
       ))}
 
       <button
         type="button"
+        onClick={handleConfirm}
         style={{
           marginTop: "12px",
           padding: "12px 18px",
