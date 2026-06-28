@@ -8,30 +8,36 @@ export default function Header({ title }: HeaderProps) {
   return (
     <header
       style={{
-        padding: "18px 24px",
+        height: "45px",
+        padding: "0 18px",
         borderBottom: `1px solid ${colors.border}`,
         background: colors.background,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
       }}
     >
       <h1
         style={{
           margin: 0,
-          fontSize: "1.6rem",
+          fontSize: "1rem",
           color: colors.textPrimary,
+          fontWeight: 700,
+          letterSpacing: "-0.02em",
         }}
       >
         {title}
       </h1>
 
-      <p
+      <span
         style={{
-          margin: "6px 0 0",
-          color: colors.textSecondary,
-          fontSize: "0.85rem",
+          color: colors.textMuted,
+          fontSize: "0.75rem",
+          fontWeight: 600,
         }}
       >
-        v0.3.1 · AI Parsing Release
-      </p>
+        v0.3.1
+      </span>
     </header>
   );
 }
