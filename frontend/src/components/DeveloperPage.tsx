@@ -3,11 +3,7 @@ import NotificationTester from "./NotificationTester";
 
 export default function DeveloperPage() {
   return (
-    <section
-      style={{
-        color: "var(--color-text-primary)",
-      }}
-    >
+<section className="engine-lab-page">
       <h2
         style={{
           margin: "0 0 14px",
