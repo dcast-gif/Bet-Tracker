@@ -1,12 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Condition } from "../types/condition";
+import { buildNotification } from "../engine/buildNotification";
+import { createStatisticsSnapshot } from "../engine/createStatisticsSnapshot";
+import { processSnapshot } from "../engine/processSnapshot";
+import { createProgressMessage } from "../engine/createProgressMessage";
 
 type Stats = {
   goals: number;
   corners: number;
   yellowCards: number;
   redCards: number;
+};
+
+const testCondition: Condition = {
+  id: "over-2-5-goals",
+  statistic: "goals",
+  operator: "greater_than_or_equal",
+  targetValue: 3,
+  currentValue: 0,
+  satisfied: false,
 };
 
 export default function EngineLab() {
@@ -17,7 +31,29 @@ export default function EngineLab() {
     redCards: 0,
   });
 
-  const progress = Math.min(stats.goals, 3);
+  const snapshot = useMemo(
+    () =>
+      createStatisticsSnapshot("engine-lab-match", {
+        goals: stats.goals,
+        corners: stats.corners,
+        yellow_cards: stats.yellowCards,
+        red_cards: stats.redCards,
+      }),
+    [stats]
+  );
+
+  const result = processSnapshot(snapshot, [
+    {
+      ...testCondition,
+      currentValue: 0,
+    },
+  ])[0];
+
+  const progressMessage = createProgressMessage(
+    testCondition,
+    result,
+    "Goals"
+  );
 
   function updateStat(stat: keyof Stats, change: number) {
     setStats((current) => ({
@@ -29,19 +65,17 @@ export default function EngineLab() {
   useEffect(() => {
     if (!("Notification" in window)) return;
     if (Notification.permission !== "granted") return;
+    if (!result.notificationRequired) return;
+    if (result.currentValue === 0) return;
 
-    if (stats.goals === 0) return;
+    const notification = buildNotification(testCondition, result, "Goals");
 
-    if (stats.goals >= 3) {
-      new Notification("✅ Selection Complete", {
-        body: "Over 2.5 Goals\n3 / 3 Goals",
-      });
-    } else {
-      new Notification("⚽ Goal", {
-        body: `Over 2.5 Goals\n${progress} / 3 Goals`,
-      });
-    }
-  }, [stats.goals]);
+    if (!notification) return;
+
+    new Notification(notification.title, {
+      body: notification.message,
+    });
+  }, [result.currentValue, result.notificationRequired]);
 
   return (
     <section
@@ -56,7 +90,7 @@ export default function EngineLab() {
       <h3>Engine Lab</h3>
 
       <p style={{ color: "#94a3b8" }}>
-        Simulate a live football match.
+        Simulate live stats and let the Progress Engine calculate the result.
       </p>
 
       <StatControl
@@ -100,16 +134,20 @@ export default function EngineLab() {
 
         <p>Over 2.5 Goals</p>
 
-        <h2>{progress} / 3 Goals</h2>
+        <h2>{progressMessage}</h2>
 
         <progress
-          value={progress}
-          max={3}
+          value={result.progressPercentage}
+          max={100}
           style={{
             width: "100%",
             height: "18px",
           }}
         />
+
+        <p style={{ color: "#94a3b8" }}>
+          Engine calculated: {result.progressPercentage}%
+        </p>
       </div>
     </section>
   );
@@ -140,11 +178,15 @@ function StatControl({
       <strong>{label}</strong>
 
       <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-        <button onClick={onDecrease}>−</button>
+        <button type="button" onClick={onDecrease}>
+          −
+        </button>
 
         <span>{value}</span>
 
-        <button onClick={onIncrease}>+</button>
+        <button type="button" onClick={onIncrease}>
+          +
+        </button>
       </div>
     </div>
   );
