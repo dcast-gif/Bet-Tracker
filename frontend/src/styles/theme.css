@@ -45,3 +45,16 @@ body {
   background: var(--color-background);
   color: var(--color-text-primary);
 }
+.bet-tab {
+  color: var(--color-text-secondary);
+}
+
+.bet-tab-active {
+  color: #0f6b3a;
+}
+
+@media (prefers-color-scheme: dark) {
+  .bet-tab-active {
+    color: #6ee7a8;
+  }
+}
