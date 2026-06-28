@@ -6,6 +6,7 @@ import { uploadScreenshot } from "../services/uploadScreenshot";
 export default function UploadBox() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [status, setStatus] = useState<
     "idle" | "previewing" | "uploading" | "uploaded" | "error"
   >("idle");
@@ -19,6 +20,7 @@ export default function UploadBox() {
 
     setStatus("previewing");
     setDownloadUrl(null);
+    setErrorMessage(null);
 
     const localPreviewUrl = URL.createObjectURL(file);
     setPreviewUrl(localPreviewUrl);
@@ -32,6 +34,13 @@ export default function UploadBox() {
       setStatus("uploaded");
     } catch (error) {
       console.error(error);
+
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("Unknown upload error");
+      }
+
       setStatus("error");
     }
   }
@@ -99,9 +108,10 @@ export default function UploadBox() {
       )}
 
       {status === "error" && (
-        <p style={{ color: "#ef4444" }}>
-          Upload failed. Check Supabase Storage settings.
-        </p>
+        <div style={{ color: "#ef4444" }}>
+          <p>Upload failed.</p>
+          <p>{errorMessage}</p>
+        </div>
       )}
 
       {downloadUrl && (
