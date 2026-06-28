@@ -25,7 +25,7 @@ export default function BottomNavigation({
         left: 0,
         right: 0,
         bottom: 0,
-        minHeight: "78px",
+        minHeight: "74px",
         paddingBottom: "env(safe-area-inset-bottom)",
         background: colors.surface,
         borderTop: `1px solid ${colors.border}`,
@@ -44,16 +44,16 @@ export default function BottomNavigation({
         type="button"
         onClick={onAdd}
         style={{
-          width: "58px",
-          height: "58px",
+          width: "54px",
+          height: "54px",
           borderRadius: "50%",
           border: `3px solid ${colors.surface}`,
-          background: colors.accent,
+          background: "#1C8F50",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          transform: "translateY(-18px)",
-          boxShadow: "0 10px 24px rgba(0,0,0,0.28)",
+          transform: "translateY(-16px)",
+          boxShadow: "0 8px 18px rgba(0,0,0,0.22)",
           cursor: "pointer",
         }}
       >
@@ -74,7 +74,7 @@ const buttonStyle: React.CSSProperties = {
   alignItems: "center",
   justifyContent: "center",
   cursor: "pointer",
-  width: "54px",
-  height: "54px",
+  width: "52px",
+  height: "52px",
   borderRadius: radius.pill,
 };
