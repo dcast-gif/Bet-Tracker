@@ -7,6 +7,8 @@ export function evaluateCondition(
 ): EvaluationResult {
   const previousValue = condition.currentValue;
 
+  const progressed = latestValue !== previousValue;
+
   let completed = false;
 
   switch (condition.operator) {
@@ -31,15 +33,23 @@ export function evaluateCondition(
       break;
   }
 
+  const progressPercentage = Math.min(
+    100,
+    Math.round((latestValue / condition.targetValue) * 100)
+  );
+
   return {
     conditionId: condition.id,
     previousValue,
     currentValue: latestValue,
-    progressed: latestValue !== previousValue,
+    progressed,
     completed,
     failed: false,
-    notificationRequired: latestValue !== previousValue,
-    notificationTitle: undefined,
-    notificationMessage: undefined,
-  };
+    notificationRequired: progressed,
+    notificationTitle: completed
+      ? "✅ Selection Complete"
+      : "📈 Progress Update",
+    notificationMessage: `${latestValue} / ${condition.targetValue}`,
+    progressPercentage,
+  } as EvaluationResult & { progressPercentage: number };
 }
