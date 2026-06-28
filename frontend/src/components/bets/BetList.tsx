@@ -7,6 +7,8 @@ export default function BetList() {
         title="SBK Bet Builder"
         subtitle="Liverpool vs Arsenal"
         progress="40%"
+        completed={2}
+        total={5}
         minute="78'"
         status="live"
       />
@@ -15,6 +17,8 @@ export default function BetList() {
         title="Weekend Acca"
         subtitle="Spain vs Uruguay"
         progress="0%"
+        completed={0}
+        total={6}
         minute="19:45"
         status="upcoming"
       />
@@ -23,6 +27,8 @@ export default function BetList() {
         title="Friday Night Bet"
         subtitle="France vs Germany"
         progress="100%"
+        completed={5}
+        total={5}
         status="won"
       />
     </>
