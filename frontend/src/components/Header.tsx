@@ -41,7 +41,7 @@ export default function Header({ title }: HeaderProps) {
           fontSize: "0.9rem",
         }}
       >
-        v0.2.0
+        v0.3.0
       </span>
     </header>
   );
