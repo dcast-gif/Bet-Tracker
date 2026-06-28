@@ -90,15 +90,17 @@ export default function UploadBox() {
         </div>
       )}
 
-      {status === "uploading" && <p>Uploading...</p>}
+      {status === "uploading" && <p>Uploading to Supabase...</p>}
 
       {status === "uploaded" && (
-        <p style={{ color: "#22c55e" }}>Upload complete ✅</p>
+        <p style={{ color: "#22c55e" }}>
+          Upload complete ✅ Ready for AI parsing.
+        </p>
       )}
 
       {status === "error" && (
         <p style={{ color: "#ef4444" }}>
-          Upload failed. Check Firebase Storage settings.
+          Upload failed. Check Supabase Storage settings.
         </p>
       )}
 
@@ -110,7 +112,7 @@ export default function UploadBox() {
             fontSize: "0.8rem",
           }}
         >
-          Firebase URL: {downloadUrl}
+          Supabase URL: {downloadUrl}
         </p>
       )}
     </section>
