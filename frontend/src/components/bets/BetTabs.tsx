@@ -22,6 +22,7 @@ export default function BetTabs({ active, onChange }: BetTabsProps) {
         borderRadius: radius.pill,
         background: colors.surface,
         border: `1px solid ${colors.border}`,
+        boxShadow: "var(--shadow-soft)",
       }}
     >
       {tabs.map((tab) => {
@@ -32,14 +33,14 @@ export default function BetTabs({ active, onChange }: BetTabsProps) {
             key={tab}
             type="button"
             onClick={() => onChange(tab)}
-            className={selected ? "bet-tab-active" : "bet-tab"}
             style={{
               flex: 1,
               padding: "10px",
               borderRadius: radius.pill,
               border: "none",
               background: selected ? colors.accentSoft : "transparent",
-              fontWeight: 800,
+              color: selected ? colors.accent : colors.textSecondary,
+              fontWeight: selected ? 800 : 700,
               textTransform: "capitalize",
               cursor: "pointer",
             }}
