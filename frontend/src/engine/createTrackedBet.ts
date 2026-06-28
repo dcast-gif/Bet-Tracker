@@ -7,6 +7,8 @@ export function createTrackedBet(
   return {
     id: parsedBetSlip.id,
     bookmaker: parsedBetSlip.bookmaker,
+    uploadedAt: parsedBetSlip.createdAt,
+    status: "uploaded",
     selections: [],
   };
 }
