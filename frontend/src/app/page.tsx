@@ -1,6 +1,7 @@
 import Header from "../components/Header";
 import UploadBox from "../components/UploadBox";
 import ActiveBets from "../components/ActiveBets";
+import NotificationTester from "../components/NotificationTester";
 
 export default function Home() {
   return (
@@ -22,6 +23,8 @@ export default function Home() {
         </p>
 
         <UploadBox />
+
+        <NotificationTester />
 
         <ActiveBets />
       </main>
