@@ -4,6 +4,8 @@ type BetCardProps = {
   title: string;
   subtitle: string;
   progress: string;
+  completed: number;
+  total: number;
   minute?: string;
   status: "live" | "upcoming" | "won" | "lost";
 };
@@ -12,15 +14,17 @@ export default function BetCard({
   title,
   subtitle,
   progress,
+  completed,
+  total,
   minute,
   status,
 }: BetCardProps) {
-  const colours = {
+  const colour = {
     live: colors.accent,
     upcoming: colors.info,
     won: "#D4AF37",
     lost: colors.danger,
-  };
+  }[status];
 
   return (
     <div
@@ -31,7 +35,6 @@ export default function BetCard({
         padding: "18px",
         marginBottom: "18px",
         boxShadow: shadows.soft,
-        transition: "0.2s ease",
       }}
     >
       <div
@@ -39,6 +42,7 @@ export default function BetCard({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          marginBottom: "8px",
         }}
       >
         <strong
@@ -52,32 +56,31 @@ export default function BetCard({
 
         <span
           style={{
-            color: colours[status],
+            color: colour,
             fontWeight: 700,
-            textTransform: "uppercase",
             fontSize: "0.75rem",
+            textTransform: "uppercase",
           }}
         >
           {status}
         </span>
       </div>
 
-      <p
+      <div
         style={{
           color: colors.textSecondary,
-          marginTop: "8px",
           marginBottom: "14px",
         }}
       >
         {subtitle}
-      </p>
+      </div>
 
       <div
         style={{
           height: "8px",
           borderRadius: radius.pill,
-          background: colors.surface,
           overflow: "hidden",
+          background: colors.surface,
           marginBottom: "12px",
         }}
       >
@@ -85,7 +88,7 @@ export default function BetCard({
           style={{
             width: progress,
             height: "100%",
-            background: colours[status],
+            background: colour,
           }}
         />
       </div>
@@ -98,7 +101,9 @@ export default function BetCard({
           fontSize: "0.85rem",
         }}
       >
-        <span>{progress} Complete</span>
+        <span>
+          {completed} / {total} Complete
+        </span>
 
         {minute && <span>{minute}</span>}
       </div>
